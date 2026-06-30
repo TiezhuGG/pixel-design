@@ -57,5 +57,5 @@ jobs:
           port: ${{ secrets.SERVER_SSH_PORT || secrets.SERVER_SSH_PORT || 22 }}
           script_stop: true
           script: |
-            cd "${{ secrets.APP_DIR || '/opt/pixeldesign' }}"
+            cd "${{ secrets.APP_DIR || '/opt/pixel-design' }}"
             DEPLOY_BRANCH="${{ github.ref_name }}" bash scripts/deploy.sh
