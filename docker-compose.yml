@@ -4,6 +4,8 @@ services:
   backend:
     build:
       context: ./backend
+      args:
+        NPM_CONFIG_REGISTRY: ${NPM_CONFIG_REGISTRY:-https://registry.npmmirror.com}
     container_name: pixeldesign-backend
     restart: unless-stopped
     env_file:
@@ -26,6 +28,7 @@ services:
       args:
         BACKEND_URL: http://backend:8000
         NEXT_PUBLIC_BACKEND_URL: ""
+        NPM_CONFIG_REGISTRY: ${NPM_CONFIG_REGISTRY:-https://registry.npmmirror.com}
     container_name: pixeldesign-frontend
     restart: unless-stopped
     depends_on:
