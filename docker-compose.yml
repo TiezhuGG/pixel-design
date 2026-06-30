@@ -1,0 +1,43 @@
+﻿name: pixeldesign
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: pixeldesign-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+      PUBLIC_BASE_URL: ${PIXELDESIGN_PUBLIC_ORIGIN:-https://your-domain.com}
+      STUDIO_GENESIS_UPLOAD_DIR: /app/uploads
+      STUDIO_GENESIS_SQLITE_PATH: /app/data/studio-genesis.sqlite
+    volumes:
+      - backend_uploads:/app/uploads
+      - backend_data:/app/data
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BACKEND_URL: http://backend:8000
+        NEXT_PUBLIC_BACKEND_URL: ""
+    container_name: pixeldesign-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      PORT: 80
+      BACKEND_URL: http://backend:8000
+      NEXT_PUBLIC_BACKEND_URL: ""
+    ports:
+      - "${PIXELDESIGN_FRONTEND_PORT:-8083}:80"
+
+volumes:
+  backend_uploads:
+  backend_data:

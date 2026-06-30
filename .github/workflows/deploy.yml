@@ -1,0 +1,61 @@
+﻿name: Deploy to Tencent Cloud
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: pixeldesign-production
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            backend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: backend
+
+      - name: Typecheck frontend
+        run: npm run typecheck
+        working-directory: frontend
+
+      - name: Typecheck backend
+        run: npm run typecheck
+        working-directory: backend
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: typecheck
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST || secrets.SERVER_HOST || '101.34.87.128' }}
+          username: ${{ secrets.SERVER_USER || secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY || secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_SSH_PORT || secrets.SERVER_SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            cd "${{ secrets.APP_DIR || '/opt/pixeldesign' }}"
+            DEPLOY_BRANCH="${{ github.ref_name }}" bash scripts/deploy.sh

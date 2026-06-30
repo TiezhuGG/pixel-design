@@ -280,12 +280,12 @@ export default function StudioGenesisLandingPage() {
       <section className="py-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground mb-6">
-            {designPlatformName}：你的 AI 电商视觉专家
+            {designPlatformName}
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+          {/* <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
             让小团队也有大牌设计力。支持智能全品类商品图和风格复刻，让您的商品脱颖而出。
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          </p> */}
+          {/* <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-12 text-base rounded-xl px-8"
               href="/studio-genesis/workspace"
@@ -299,7 +299,7 @@ export default function StudioGenesisLandingPage() {
             >
               查看演示
             </a>
-          </div>
+          </div> */}
         </div>
       </section>
 
