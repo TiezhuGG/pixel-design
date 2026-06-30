@@ -28,5 +28,5 @@ COPY --from=builder /app/package.json ./package.json
 RUN mkdir -p uploads data
 
 EXPOSE 8000
-CMD ["npm", "run", "start"]
+CMD ["sh", "-c", "npx next start -p ${PORT}"]
 
