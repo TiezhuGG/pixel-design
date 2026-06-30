@@ -196,6 +196,26 @@ async function normalizeImageUrlForModelScope(rawUrl: string, requestOrigin?: st
   return String(normalized || rawUrl || "").trim()
 }
 
+function normalizeModelScopePrompt(prompt: string) {
+  const maxLength = Math.max(200, Number(process.env.MODELSCOPE_IMAGE_PROMPT_MAX_LENGTH || 1900))
+  const normalized = String(prompt || "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{4,}/g, "\n\n\n")
+    .trim()
+  if (normalized.length <= maxLength) return normalized
+
+  const hardLimit = Math.max(1, maxLength - 80)
+  const sliced = normalized.slice(0, hardLimit)
+  const paragraphBoundary = Math.max(sliced.lastIndexOf("\n\n"), sliced.lastIndexOf("\n- "), sliced.lastIndexOf("\n"))
+  const compact = paragraphBoundary > Math.floor(hardLimit * 0.72)
+    ? sliced.slice(0, paragraphBoundary)
+    : sliced
+
+  return `${compact.trim()}\n\nKeep all reference product identity, layout intent, material fidelity, and commercial e-commerce quality.`
+}
+
 async function buildRequestBody(params: {
   modelId: string
   prompt: string
@@ -297,9 +317,10 @@ export async function generateModelScopeImage(params: {
   const endpointBase = normalizeEndpointBase(params.endpointBase || "", "https://api-inference.modelscope.cn/v1")
   const endpoint = buildImageGenerationEndpoint(endpointBase, "https://api-inference.modelscope.cn/v1")
   const providerModelId = normalizeProviderModelId(params.modelId)
+  const prompt = normalizeModelScopePrompt(params.prompt)
   const body = await buildRequestBody({
     modelId: providerModelId,
-    prompt: params.prompt,
+    prompt,
     options: params.options,
   })
 
@@ -323,7 +344,8 @@ export async function generateModelScopeImage(params: {
       hasImageUrl: Boolean((body as any).image_url),
       imageUrlIsArray: Array.isArray((body as any).image_url),
       imageUrlCount: Array.isArray((body as any).image_url) ? (body as any).image_url.length : (body as any).image_url ? 1 : 0,
-      promptLength: params.prompt.length,
+      promptLength: prompt.length,
+      originalPromptLength: params.prompt.length,
     },
     summary: summarizePayload(payload),
     errors: summarizeErrors(payload),
