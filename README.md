@@ -89,7 +89,7 @@ pixel-design/
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/ddlmanus/pixel-design.git
+git clone git@github.com:TiezhuGG/pixel-design.git
 cd pixel-design
 ```
 
