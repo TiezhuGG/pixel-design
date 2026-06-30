@@ -2,8 +2,10 @@
 WORKDIR /app
 ARG NPM_CONFIG_REGISTRY=https://registry.npmmirror.com
 ENV NPM_CONFIG_REGISTRY=${NPM_CONFIG_REGISTRY}
+ENV NPM_CONFIG_AUDIT=false
+ENV NPM_CONFIG_FUND=false
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --no-audit --no-fund --progress=false
 
 FROM node:22-alpine AS builder
 WORKDIR /app
