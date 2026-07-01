@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "PixelDesign 商品详情页",
-  description: "AI 商品详情页生成工具",
+  title: "PixelDesign",
+  description: "AI电商图片生成平台",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
